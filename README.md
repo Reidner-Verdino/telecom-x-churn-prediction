@@ -135,7 +135,7 @@ imbalanced-learn>=0.10  # opcional (SMOTE)
 
 ## 👤 Autor
 
-Desenvolvido como parte do **Desafio Telecom X** — Programa de Data Science
+Desenvolvido por Reidner Verdino como parte do **Desafio Telecom X** — Programa de Data Science
 
 ---
 
