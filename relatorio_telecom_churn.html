@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Telecom X — Previsão de Evasão de Clientes</title>
+<style>
+  :root {
+    --primary: #1A1F36;
+    --accent: #E94560;
+    --green: #2ECC71;
+    --blue: #3498DB;
+    --light: #F0F4FF;
+    --text: #2D3748;
+    --border: #E2E8F0;
+    --shadow: 0 4px 20px rgba(26,31,54,0.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #F7F9FC;
+    color: var(--text);
+    line-height: 1.7;
+  }
+  .hero {
+    background: linear-gradient(135deg, var(--primary) 0%, #2D3561 60%, #E94560 100%);
+    color: white;
+    padding: 56px 40px 48px;
+    text-align: center;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 20px;
+    padding: 4px 16px;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .hero h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 10px; }
+  .hero p  { font-size: 1.1rem; opacity: 0.82; max-width: 600px; margin: 0 auto 28px; }
+  .hero-meta { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; }
+  .hero-meta span {
+    background: rgba(255,255,255,0.12);
+    border-radius: 8px;
+    padding: 6px 18px;
+    font-size: 13px;
+  }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+  .section    { background: white; border-radius: 16px; box-shadow: var(--shadow); margin: 28px 0; padding: 36px; }
+
+  h2 {
+    font-size: 1.4rem; font-weight: 700; color: var(--primary);
+    border-left: 4px solid var(--accent); padding-left: 14px; margin-bottom: 20px;
+  }
+  h3 { font-size: 1.1rem; font-weight: 600; color: var(--primary); margin: 20px 0 10px; }
+  p  { color: #4A5568; margin-bottom: 12px; }
+
+  /* Cards de métricas */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 16px; margin: 20px 0; }
+  .card {
+    background: var(--light);
+    border-radius: 12px;
+    padding: 20px 16px;
+    text-align: center;
+    border: 1px solid var(--border);
+    transition: transform 0.2s;
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+  .card .val  { font-size: 2rem; font-weight: 800; color: var(--accent); }
+  .card .lbl  { font-size: 12px; color: #718096; font-weight: 500; margin-top: 4px; }
+
+  /* Tabela */
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  thead tr { background: var(--primary); color: white; }
+  thead th  { padding: 12px 16px; text-align: left; font-weight: 600; }
+  tbody tr:nth-child(even) { background: var(--light); }
+  tbody td { padding: 11px 16px; border-bottom: 1px solid var(--border); }
+  .best-row { background: #FFF5F5 !important; font-weight: 600; }
+  .badge {
+    display: inline-block; border-radius: 20px; padding: 2px 10px;
+    font-size: 11px; font-weight: 700;
+  }
+  .badge-red   { background: #FED7D7; color: #C53030; }
+  .badge-green { background: #C6F6D5; color: #276749; }
+  .badge-blue  { background: #BEE3F8; color: #2A4E8C; }
+
+  /* Imagens */
+  .img-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+  .img-grid.single { grid-template-columns: 1fr; }
+  .img-card { border-radius: 12px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+  .img-card img { width: 100%; display: block; }
+  .img-caption { padding: 8px 14px; background: var(--light); font-size: 12px; color: #718096; text-align: center; }
+
+  /* Etapas */
+  .steps { counter-reset: step-counter; }
+  .step  {
+    display: flex; gap: 18px; align-items: flex-start;
+    padding: 16px 0; border-bottom: 1px solid var(--border);
+  }
+  .step:last-child { border: none; }
+  .step-num {
+    background: var(--accent); color: white;
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 15px; flex-shrink: 0;
+  }
+  .step-body h4 { font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+  .step-body p  { margin: 0; font-size: 14px; }
+
+  /* Insights */
+  .insight {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: var(--light); border-radius: 10px;
+    padding: 16px 18px; margin: 10px 0;
+    border-left: 4px solid var(--accent);
+  }
+  .insight-icon { font-size: 22px; flex-shrink: 0; }
+  .insight-text h4 { font-weight: 700; color: var(--primary); margin-bottom: 4px; font-size: 14px; }
+  .insight-text p  { margin: 0; font-size: 13px; color: #4A5568; }
+
+  /* Estratégias */
+  .estrategia-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 16px; margin: 20px 0; }
+  .estrategia-card {
+    border-radius: 12px; padding: 20px;
+    background: linear-gradient(135deg, var(--primary) 0%, #2D3561 100%);
+    color: white;
+  }
+  .estrategia-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+  .estrategia-card p  { font-size: 13px; opacity: 0.85; margin: 0; }
+  .estrategia-card .es-icon { font-size: 28px; margin-bottom: 10px; }
+
+  footer {
+    text-align: center; padding: 32px;
+    color: #718096; font-size: 13px;
+    border-top: 1px solid var(--border); margin-top: 40px;
+  }
+
+  @media (max-width: 768px) {
+    .img-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 1.7rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">Machine Learning · Classificação</div>
+  <h1>📡 Telecom X</h1>
+  <p>Previsão de Evasão de Clientes — Pipeline de Modelagem Preditiva</p>
+  <div class="hero-meta">
+    <span>🗓 Parte 2 do Desafio</span>
+    <span>📊 7.043 clientes</span>
+    <span>🤖 3 modelos treinados</span>
+    <span>✅ 10 etapas concluídas</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- RESUMO -->
+<div class="section">
+  <h2>📋 Visão Geral do Projeto</h2>
+  <p>Este relatório documenta o pipeline completo de Machine Learning desenvolvido para prever a evasão de clientes da Telecom X. Foram seguidas as etapas de pré-processamento, análise exploratória, treinamento de modelos, avaliação e interpretação dos resultados.</p>
+
+  <div class="cards">
+    <div class="card"><div class="val">7.043</div><div class="lbl">Total de Clientes</div></div>
+    <div class="card"><div class="val">31,5%</div><div class="lbl">Taxa de Evasão</div></div>
+    <div class="card"><div class="val">46</div><div class="lbl">Features (pós-encoding)</div></div>
+    <div class="card"><div class="val">3</div><div class="lbl">Modelos Treinados</div></div>
+    <div class="card"><div class="val">76%</div><div class="lbl">AUC-ROC (melhor)</div></div>
+  </div>
+</div>
+
+<!-- PIPELINE -->
+<div class="section">
+  <h2>🔧 Pipeline de Pré-processamento</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h4>Carregamento dos Dados Tratados</h4>
+        <p>Dataset com 7.043 registros e 20 colunas, proveniente da Parte 1 do desafio (já limpo e padronizado). Zero valores nulos identificados.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h4>Remoção de Colunas Irrelevantes</h4>
+        <p>Colunas de ID único foram verificadas e removidas. Identificadores não contribuem para a capacidade preditiva e podem introduzir ruído nos modelos.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h4>One-Hot Encoding</h4>
+        <p>15 variáveis categóricas foram transformadas em formato numérico via <code>pd.get_dummies()</code>, expandindo o dataset de 20 para <strong>46 colunas</strong>.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h4>Análise de Balanceamento</h4>
+        <p>Identificado desequilíbrio moderado: 68,5% ativos × 31,5% evadidos (razão 2,2:1). Foi utilizado o parâmetro <code>class_weight='balanced'</code> nos modelos como estratégia de correção.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <h4>Normalização (StandardScaler)</h4>
+        <p>Aplicada exclusivamente para a Regressão Logística, que é sensível à escala. Random Forest e Árvore de Decisão são modelos baseados em árvore e não requerem normalização.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <h4>Divisão Treino/Teste (80/20)</h4>
+        <p>5.634 amostras para treino e 1.409 para teste, com estratificação para manter a proporção de evasão em ambos os conjuntos.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROPORÇÃO DE EVASÃO -->
+<div class="section">
+  <h2>📊 Análise Exploratória</h2>
+
+  <h3>Proporção de Evasão</h3>
+  <div class="img-grid">
+    <div class="img-card">
+      <img src="01_proporcao_evasao.png" alt="Proporção de Evasão">
+      <div class="img-caption">Distribuição das classes: Ativos vs Evadidos</div>
+    </div>
+    <div class="img-card">
+      <img src="04_analises_direcionadas.png" alt="Análises Direcionadas">
+      <div class="img-caption">Fatores de risco: Contrato, Internet e Cobrança</div>
+    </div>
+  </div>
+
+  <h3>Correlação com a Variável Alvo</h3>
+  <div class="img-grid">
+    <div class="img-card">
+      <img src="02_correlacao_evasao.png" alt="Correlação com Evasão">
+      <div class="img-caption">Top 15 variáveis com maior correlação com a evasão</div>
+    </div>
+    <div class="img-card">
+      <img src="03_heatmap_correlacao.png" alt="Heatmap Correlação">
+      <div class="img-caption">Matriz de correlação entre variáveis numéricas</div>
+    </div>
+  </div>
+</div>
+
+<!-- MODELOS -->
+<div class="section">
+  <h2>🤖 Modelos de Classificação</h2>
+
+  <h3>Modelo 1 — Regressão Logística</h3>
+  <p><strong>Justificativa:</strong> Modelo linear interpretável, ideal como baseline. Requer normalização pois é sensível à escala das features. Utiliza <code>class_weight='balanced'</code> para lidar com o desequilíbrio de classes.</p>
+
+  <h3>Modelo 2 — Random Forest</h3>
+  <p><strong>Justificativa:</strong> Ensemble de árvores de decisão robusto, não sensível à escala (sem necessidade de normalização). Fornece importância de variáveis nativa e lida bem com dados heterogêneos.</p>
+
+  <h3>Modelo 3 — Árvore de Decisão (Bônus)</h3>
+  <p><strong>Justificativa:</strong> Modelo de alta interpretabilidade utilizado como referência comparativa. Não requer normalização. Ajustado com <code>max_depth=8</code> para evitar overfitting.</p>
+</div>
+
+<!-- RESULTADOS -->
+<div class="section">
+  <h2>📈 Avaliação dos Modelos</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Modelo</th>
+        <th>Acurácia</th>
+        <th>Precisão</th>
+        <th>Recall</th>
+        <th>F1-Score</th>
+        <th>AUC-ROC</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="best-row">
+        <td>⭐ Regressão Logística</td>
+        <td>67,78%</td>
+        <td>49,30%</td>
+        <td>71,24%</td>
+        <td><strong>58,27%</strong></td>
+        <td>76,18%</td>
+        <td><span class="badge badge-red">Melhor F1</span></td>
+      </tr>
+      <tr>
+        <td>🌲 Random Forest</td>
+        <td>70,69%</td>
+        <td>53,20%</td>
+        <td>59,78%</td>
+        <td>56,30%</td>
+        <td>76,15%</td>
+        <td><span class="badge badge-blue">Maior Precisão</span></td>
+      </tr>
+      <tr>
+        <td>🌿 Árvore de Decisão</td>
+        <td>66,50%</td>
+        <td>47,92%</td>
+        <td>69,89%</td>
+        <td>56,86%</td>
+        <td>71,35%</td>
+        <td><span class="badge badge-green">Baseline</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="img-grid" style="margin-top:24px;">
+    <div class="img-card">
+      <img src="05_comparativo_metricas.png" alt="Comparativo de Métricas">
+      <div class="img-caption">Comparativo visual de todas as métricas</div>
+    </div>
+    <div class="img-card">
+      <img src="07_curvas_roc.png" alt="Curvas ROC">
+      <div class="img-caption">Curvas ROC — poder discriminativo dos modelos</div>
+    </div>
+  </div>
+
+  <div class="img-grid single" style="margin-top:16px;">
+    <div class="img-card">
+      <img src="06_matrizes_confusao.png" alt="Matrizes de Confusão">
+      <div class="img-caption">Matrizes de Confusão — todos os modelos</div>
+    </div>
+  </div>
+
+  <h3>Análise Crítica dos Resultados</h3>
+  <div class="insight">
+    <div class="insight-icon">🎯</div>
+    <div class="insight-text">
+      <h4>Recall como métrica prioritária</h4>
+      <p>Em problemas de churn, é mais custoso deixar de identificar um cliente que vai sair (falso negativo) do que acionar um cliente que ficaria (falso positivo). Por isso, o <strong>Recall</strong> tem maior peso estratégico. A Regressão Logística obteve o melhor Recall (71,24%).</p>
+    </div>
+  </div>
+  <div class="insight">
+    <div class="insight-icon">⚖️</div>
+    <div class="insight-text">
+      <h4>Trade-off Precisão × Recall</h4>
+      <p>O Random Forest apresentou maior precisão (53,20%) com menor recall. Dependendo do orçamento de ações de retenção, pode ser preferível um modelo mais preciso (menos acionamentos, mas mais certeiros).</p>
+    </div>
+  </div>
+  <div class="insight">
+    <div class="insight-icon">📉</div>
+    <div class="insight-text">
+      <h4>Sem evidência de Overfitting grave</h4>
+      <p>O Random Forest com <code>max_depth=15</code> e <code>min_samples_split=10</code> apresentou boa generalização. A Árvore de Decisão com profundidade limitada também não mostrou sinais de memorização excessiva.</p>
+    </div>
+  </div>
+</div>
+
+<!-- IMPORTÂNCIA DAS VARIÁVEIS -->
+<div class="section">
+  <h2>🔍 Importância das Variáveis</h2>
+  <div class="img-grid">
+    <div class="img-card">
+      <img src="08_importancia_rf.png" alt="Importância Random Forest">
+      <div class="img-caption">Random Forest — Importância por redução de impureza (Gini)</div>
+    </div>
+    <div class="img-card">
+      <img src="09_coeficientes_lr.png" alt="Coeficientes Regressão Logística">
+      <div class="img-caption">Regressão Logística — Coeficientes (positivo = aumenta evasão)</div>
+    </div>
+  </div>
+
+  <h3>Principais Fatores Identificados</h3>
+  <table>
+    <thead>
+      <tr><th>#</th><th>Variável</th><th>Importância (RF)</th><th>Coef. (LR)</th><th>Impacto na Evasão</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>Tempo de contrato (meses)</td><td>14,52%</td><td>—</td><td><span class="badge badge-green">Reduz (quanto maior)</span></td></tr>
+      <tr><td>2</td><td>Total gasto</td><td>12,28%</td><td>—</td><td><span class="badge badge-green">Reduz (fidelização)</span></td></tr>
+      <tr><td>3</td><td>Contrato Mês a Mês</td><td>12,01%</td><td>+0,52</td><td><span class="badge badge-red">Aumenta</span></td></tr>
+      <tr><td>4</td><td>Cobrança Mensal</td><td>10,47%</td><td>+0,17</td><td><span class="badge badge-red">Aumenta</span></td></tr>
+      <tr><td>5</td><td>Internet Fibra Óptica</td><td>—</td><td>+0,19</td><td><span class="badge badge-red">Aumenta</span></td></tr>
+      <tr><td>6</td><td>Cheque Eletrônico</td><td>—</td><td>+0,16</td><td><span class="badge badge-red">Aumenta</span></td></tr>
+      <tr><td>7</td><td>Contrato Dois Anos</td><td>7,71%</td><td>—</td><td><span class="badge badge-green">Reduz fortemente</span></td></tr>
+      <tr><td>8</td><td>Cliente Idoso</td><td>—</td><td>+0,09</td><td><span class="badge badge-red">Aumenta levemente</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- CONCLUSÃO ESTRATÉGICA -->
+<div class="section">
+  <h2>🎯 Conclusão Estratégica</h2>
+
+  <p>A análise revelou que a evasão de clientes na Telecom X está fortemente associada a fatores <strong>contratuais e financeiros</strong>, mais do que a características demográficas. Os principais achados são:</p>
+
+  <h3>Fatores de Risco (aumentam a probabilidade de evasão)</h3>
+  <div class="insight">
+    <div class="insight-icon">📅</div>
+    <div class="insight-text">
+      <h4>Contratos Mês a Mês</h4>
+      <p>Clientes com contrato mensal têm taxa de evasão ~3x maior que os de longo prazo. É o principal fator preditivo em ambos os modelos.</p>
+    </div>
+  </div>
+  <div class="insight">
+    <div class="insight-icon">🌐</div>
+    <div class="insight-text">
+      <h4>Internet via Fibra Óptica</h4>
+      <p>Apesar de ser o serviço premium, clientes de fibra apresentam maior taxa de evasão — possivelmente por insatisfação com o custo-benefício ou qualidade percebida.</p>
+    </div>
+  </div>
+  <div class="insight">
+    <div class="insight-icon">💳</div>
+    <div class="insight-text">
+      <h4>Pagamento via Cheque Eletrônico</h4>
+      <p>Associado a clientes com menor fidelização. A ausência de débito automático pode indicar menor comprometimento com o serviço.</p>
+    </div>
+  </div>
+  <div class="insight">
+    <div class="insight-icon">💰</div>
+    <div class="insight-text">
+      <h4>Alta Cobrança Mensal</h4>
+      <p>Clientes com cobrança acima de R$80/mês apresentam maior sensibilidade a preço e maior propensão à evasão.</p>
+    </div>
+  </div>
+
+  <h3 style="margin-top:28px;">Estratégias de Retenção Recomendadas</h3>
+  <div class="estrategia-grid">
+    <div class="estrategia-card">
+      <div class="es-icon">📋</div>
+      <h4>Incentivo a Contratos Anuais</h4>
+      <p>Oferecer descontos progressivos para migração de contratos mensais para anuais ou bianuais. Reduz imediatamente o maior fator de risco.</p>
+    </div>
+    <div class="estrategia-card">
+      <div class="es-icon">🔔</div>
+      <h4>Programa de Fidelidade Antecipado</h4>
+      <p>Acionar clientes com menos de 12 meses de contrato com ofertas exclusivas antes que decidam sair.</p>
+    </div>
+    <div class="estrategia-card">
+      <div class="es-icon">🌐</div>
+      <h4>Revisão do Plano de Fibra</h4>
+      <p>Investigar insatisfações com o serviço de fibra. Possíveis ajustes em preço, suporte técnico e qualidade de sinal.</p>
+    </div>
+    <div class="estrategia-card">
+      <div class="es-icon">🏦</div>
+      <h4>Migração para Débito Automático</h4>
+      <p>Incentivar clientes que pagam via cheque eletrônico a migrar para débito automático com benefícios (ex: desconto de 5%).</p>
+    </div>
+    <div class="estrategia-card">
+      <div class="es-icon">🤖</div>
+      <h4>Scoring de Churn em Tempo Real</h4>
+      <p>Implementar o modelo de Regressão Logística em produção para pontuar clientes mensalmente e acionar ações proativas.</p>
+    </div>
+    <div class="estrategia-card">
+      <div class="es-icon">👴</div>
+      <h4>Atendimento Especializado Sênior</h4>
+      <p>Criar canal dedicado para clientes idosos com suporte simplificado e tarifas diferenciadas.</p>
+    </div>
+  </div>
+
+  <h3 style="margin-top:28px;">Modelo Recomendado para Produção</h3>
+  <p>Recomenda-se a <strong>Regressão Logística</strong> como modelo principal de produção, pelos seguintes motivos:</p>
+  <ul style="margin-left:20px; color:#4A5568; line-height:2;">
+    <li>Melhor <strong>F1-Score</strong> (58,27%) e melhor <strong>Recall</strong> (71,24%) — detecta mais clientes em risco</li>
+    <li>Alta <strong>interpretabilidade</strong> dos coeficientes — facilita justificativas para stakeholders</li>
+    <li>Melhor <strong>AUC-ROC</strong> (76,18%) — superior poder discriminativo</li>
+    <li>Menor custo computacional para inferência em produção</li>
+  </ul>
+  <p style="margin-top:12px;">O <strong>Random Forest</strong> deve ser utilizado como modelo auxiliar nos casos em que a precisão das ações de retenção seja crítica (ex: campanhas de alto custo).</p>
+</div>
+
+<!-- PRÓXIMOS PASSOS -->
+<div class="section">
+  <h2>🚀 Próximos Passos</h2>
+  <div class="cards">
+    <div class="card">
+      <div class="val" style="font-size:1.5rem;">🔬</div>
+      <div class="lbl">Tuning de Hiperparâmetros (GridSearchCV)</div>
+    </div>
+    <div class="card">
+      <div class="val" style="font-size:1.5rem;">⚡</div>
+      <div class="lbl">Testar XGBoost e LightGBM</div>
+    </div>
+    <div class="card">
+      <div class="val" style="font-size:1.5rem;">🧪</div>
+      <div class="lbl">SMOTE para balanceamento</div>
+    </div>
+    <div class="card">
+      <div class="val" style="font-size:1.5rem;">📦</div>
+      <div class="lbl">Deploy com Flask/FastAPI</div>
+    </div>
+    <div class="card">
+      <div class="val" style="font-size:1.5rem;">📊</div>
+      <div class="lbl">Dashboard de monitoramento</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end container -->
+
+<footer>
+  <p>📡 <strong>Telecom X — Desafio de Churn Prediction</strong> · Desenvolvido com Python, Scikit-learn, Pandas &amp; Matplotlib</p>
+  <p style="margin-top:8px; font-size:11px;">Pipeline: Pré-processamento → Encoding → Normalização → Modelagem → Avaliação → Insights Estratégicos</p>
+</footer>
+
+</body>
+</html>
