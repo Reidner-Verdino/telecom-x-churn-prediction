@@ -17,30 +17,13 @@ Desenvolver modelos preditivos capazes de identificar clientes com maior probabi
 ## 📁 Estrutura do Repositório
 
 ```
-telecom-churn/
+telecom-x-churn-prediction/
 │
-├── data/
-│   └── telecom_tratado.csv          # Dataset tratado (Parte 1)
-│
-├── notebooks/
-│   └── TelecomX_Churn_Prediction.ipynb  # Notebook principal
-│
-├── outputs/
-│   ├── 01_proporcao_evasao.png
-│   ├── 02_correlacao_evasao.png
-│   ├── 03_heatmap_correlacao.png
-│   ├── 04_analises_direcionadas.png
-│   ├── 05_comparativo_metricas.png
-│   ├── 06_matrizes_confusao.png
-│   ├── 07_curvas_roc.png
-│   ├── 08_importancia_rf.png
-│   └── 09_coeficientes_lr.png
-│
-├── reports/
-│   └── relatorio_telecom_churn.html  # Relatório completo
-│
-├── requirements.txt
-└── README.md
+├── TelecomX_Churn_Prediction.ipynb  # Notebook principal com toda a análise
+├── churn_prediction.py              # Script Python equivalente ao notebook
+├── telecom_tratado.csv              # Dataset tratado (Parte 1 do desafio)
+├── relatorio_telecom_churn.html     # Relatório completo gerado automaticamente
+└── README.md                        # Este arquivo
 ```
 
 ---
@@ -49,7 +32,7 @@ telecom-churn/
 
 | Etapa | Descrição |
 |---|---|
-| 1 | Carregamento dos dados tratados |
+| 1 | Carregamento e inspeção dos dados tratados |
 | 2 | Remoção de colunas irrelevantes (IDs) |
 | 3 | One-Hot Encoding das variáveis categóricas |
 | 4 | Análise de proporção de evasão e balanceamento |
@@ -80,7 +63,7 @@ telecom-churn/
 | 🌲 Random Forest | 70,69% | **53,20%** | 59,78% | 56,30% | 76,15% |
 | 🌿 Árvore de Decisão | 66,50% | 47,92% | 69,89% | 56,86% | 71,35% |
 
-> **Modelo recomendado:** Regressão Logística (melhor Recall e F1-Score — ideal para detectar o máximo de clientes em risco de evasão)
+> **Modelo recomendado:** Regressão Logística — melhor Recall e F1-Score, ideal para detectar o máximo de clientes em risco de evasão.
 
 ---
 
@@ -108,15 +91,20 @@ telecom-churn/
 
 ```bash
 # 1. Clonar o repositório
-git clone https://github.com/seu-usuario/telecom-churn.git
-cd telecom-churn
+git clone https://github.com/Reidner-Verdino/telecom-x-churn-prediction.git
+cd telecom-x-churn-prediction
 
 # 2. Instalar dependências
-pip install -r requirements.txt
+pip install pandas numpy scikit-learn matplotlib seaborn
 
-# 3. Executar o notebook
-jupyter notebook notebooks/TelecomX_Churn_Prediction.ipynb
+# 3a. Executar via Jupyter Notebook
+jupyter notebook TelecomX_Churn_Prediction.ipynb
+
+# 3b. Ou executar via script Python
+python churn_prediction.py
 ```
+
+> 💡 O arquivo `telecom_tratado.csv` já está incluído no repositório — não é necessário rodar a Parte 1 do desafio antes.
 
 ---
 
@@ -128,14 +116,13 @@ numpy>=1.23
 scikit-learn>=1.2
 matplotlib>=3.6
 seaborn>=0.12
-imbalanced-learn>=0.10  # opcional (SMOTE)
 ```
 
 ---
 
 ## 👤 Autor
 
-Desenvolvido por Reidner Verdino como parte do **Desafio Telecom X** — Programa de Data Science
+Desenvolvido por **Reidner Verdino** como parte do **Desafio Telecom X** — Programa de Data Science
 
 ---
 
